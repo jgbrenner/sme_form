@@ -102,6 +102,11 @@ body {
   line-height: 1.5;
 }
 
+.intro {
+  display: grid;
+  gap: 16px;
+}
+
 .section {
   border-top: 1px solid var(--border);
   padding-top: 20px;
@@ -157,6 +162,23 @@ input[type="range"] {
   min-width: 40px;
   text-align: center;
   color: var(--accent);
+}
+
+.slider-anchors {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.slider-anchors span {
+  cursor: pointer;
+}
+
+.slider-anchors span:hover {
+  color: var(--text);
 }
 
 .vector-grid {
@@ -231,6 +253,14 @@ textarea {
   gap: 12px;
 }
 
+.status {
+  flex: 1;
+  align-self: center;
+  color: var(--danger);
+  font-size: 13px;
+  text-align: center;
+}
+
 button {
   font-family: inherit;
   border-radius: 10px;
@@ -299,6 +329,14 @@ textarea:focus {
   gap: 6px;
 }
 
+.drawer-domain {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .muted {
   color: var(--muted);
 }
@@ -308,6 +346,13 @@ textarea:focus {
   background: #0b0d12;
   border-top: 1px solid var(--border);
   padding: 20px;
+}
+
+.end-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
 
 pre {

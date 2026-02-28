@@ -35,6 +35,22 @@ const items = [
 
 const vectorOptions = ["Proxy", "State", "Ambiguity", "Fakability", "Drift", "Other"];
 
+const vectorDefinitions = {
+  Proxy: "Measures a demographic/cultural proxy instead of the trait.",
+  State: "Response is driven by temporary mood or fatigue.",
+  Ambiguity: "Text is vague, leading to multiple valid interpretations.",
+  Fakability: "Easily gamed for social desirability.",
+  Drift: "Discriminant collapse; item measures a completely different trait."
+};
+
+const domainGroups = [
+  { label: "A — Agreeableness", domain: "Agreeableness" },
+  { label: "C — Conscientiousness", domain: "Conscientiousness" },
+  { label: "E — Extraversion", domain: "Extraversion" },
+  { label: "N — Neuroticism", domain: "Neuroticism" },
+  { label: "O — Openness", domain: "Openness" }
+];
+
 const panelOptions = {
   Proxy: {
     fields: [
@@ -77,15 +93,28 @@ const witnessPlaceholders = {
   Drift: "Boundary collapse: This item mainly reflects something else because..."
 };
 
+const mechanismFieldGroups = {
+  Proxy: ["proxy_source", "proxy_mechanism", "proxy_context"],
+  State: ["state_driver", "state_timescale"],
+  Ambiguity: ["ambiguity_type"],
+  Fakability: ["fake_direction", "fake_transparency"],
+  Drift: ["drift_type", "drift_domain", "drift_context_class"]
+};
+
+const allMechanismFields = Object.values(mechanismFieldGroups).flat();
+
 let state = null;
 
 const dom = {
   progress: document.getElementById("progress"),
+  introScreen: document.getElementById("introScreen"),
+  beginAudit: document.getElementById("beginAudit"),
   itemId: document.getElementById("itemId"),
   itemDomain: document.getElementById("itemDomain"),
   itemFacet: document.getElementById("itemFacet"),
   itemScoring: document.getElementById("itemScoring"),
   itemText: document.getElementById("itemText"),
+  itemCard: document.getElementById("itemCard"),
   tripwireGroup: document.getElementById("tripwireGroup"),
   forecastDetection: document.getElementById("forecastDetection"),
   forecastDetectionValue: document.getElementById("forecastDetectionValue"),
@@ -103,6 +132,11 @@ const dom = {
   witnessCount: document.getElementById("witnessCount"),
   prevButton: document.getElementById("prevButton"),
   nextButton: document.getElementById("nextButton"),
+  validationStatus: document.getElementById("validationStatus"),
+  endScreen: document.getElementById("endScreen"),
+  backToLast: document.getElementById("backToLast"),
+  submitFinal: document.getElementById("submitFinal"),
+  appFooter: document.getElementById("appFooter"),
   drawer: document.getElementById("drawer"),
   drawerToggle: document.getElementById("drawerToggle"),
   drawerClose: document.getElementById("drawerClose"),
@@ -155,7 +189,7 @@ function buildInitialState() {
     judge_id: uuidv4(),
     submission_id: uuidv4(),
     current_index: 0,
-    started_at: now,
+    started_at: null,
     updated_at: now,
     general_comments: "",
     responses: {}
@@ -196,6 +230,9 @@ function loadState() {
     saveState();
   }
 
+  const rawIndex = Number.isInteger(state.current_index) ? state.current_index : 0;
+  state.current_index = Math.min(Math.max(rawIndex, 0), items.length - 1);
+
   const token = getTokenFromUrl();
   if (token && state.judge_token !== token) {
     state.judge_token = token;
@@ -219,9 +256,24 @@ function setRadioValue(group, value) {
 }
 
 function renderDrawerList() {
-  dom.drawerItemList.innerHTML = items
-    .map((item, index) => `<li>${index + 1}. ${item.id} — ${item.facet}</li>`)
-    .join("");
+  const rows = [];
+  domainGroups.forEach((group) => {
+    rows.push(`<li class="drawer-domain">${group.label}</li>`);
+    items
+      .filter((item) => item.domain === group.domain)
+      .forEach((item) => {
+        const scoring = item.scoring_direction === "-" ? "(-)" : "(+)";
+        rows.push(`<li>[${item.id}] ${scoring} ${item.facet}: ${item.text}</li>`);
+      });
+  });
+  dom.drawerItemList.innerHTML = rows.join("");
+}
+
+function setView(view) {
+  dom.introScreen.classList.toggle("hidden", view !== "intro");
+  dom.itemCard.classList.toggle("hidden", view !== "item");
+  dom.endScreen.classList.toggle("hidden", view !== "end");
+  dom.appFooter.classList.toggle("hidden", view !== "item");
 }
 
 function render() {
@@ -229,7 +281,7 @@ function render() {
   const response = ensureResponse(item.id);
 
   dom.progress.textContent = `${state.current_index + 1} / ${items.length}`;
-  dom.itemId.textContent = item.id;
+  dom.itemId.textContent = item.id.replace('I', '#');
   dom.itemDomain.textContent = item.domain;
   dom.itemFacet.textContent = item.facet;
   dom.itemScoring.textContent = scoringLabel(item.scoring_direction);
@@ -237,8 +289,8 @@ function render() {
 
   setRadioValue(dom.tripwireGroup, response.tripwire_status);
 
-  dom.forecastDetection.value = response.forecast_detection ?? 0;
-  dom.forecastDetectionValue.textContent = response.forecast_detection ?? "—";
+  dom.forecastDetection.value = response.forecast_detection === null ? 50 : response.forecast_detection;
+  dom.forecastDetectionValue.textContent = response.forecast_detection === null ? "—" : response.forecast_detection;
 
   if (response.tripwire_status === "Flag") {
     dom.redTeamPanel.classList.remove("hidden");
@@ -251,8 +303,8 @@ function render() {
   renderPrimaryPanel(response);
 
   setRadioValue(dom.dispositionGroup, response.disposition);
-  dom.forecastLethality.value = response.forecast_lethality ?? 0;
-  dom.forecastLethalityValue.textContent = response.forecast_lethality ?? "—";
+  dom.forecastLethality.value = response.forecast_lethality === null ? 50 : response.forecast_lethality;
+  dom.forecastLethalityValue.textContent = response.forecast_lethality === null ? "—" : response.forecast_lethality;
 
   dom.witnessText.value = response.witness_text ?? "";
   dom.witnessCount.textContent = `${dom.witnessText.value.length} / 300`;
@@ -262,7 +314,9 @@ function render() {
 
   dom.prevButton.disabled = state.current_index === 0;
   dom.nextButton.textContent = state.current_index === items.length - 1 ? "Review & Submit" : "Next";
-  dom.nextButton.disabled = !canAdvance(response);
+  const missing = getMissingRequirement(response);
+  dom.nextButton.disabled = missing !== "";
+  dom.validationStatus.textContent = missing ? `Missing: ${missing}` : "";
 }
 
 function renderVectorButtons(response) {
@@ -271,6 +325,7 @@ function renderVectorButtons(response) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "vector-button";
+    button.title = vectorDefinitions[vector] || "";
     const rank = getVectorRank(response, vector);
     if (rank) {
       button.classList.add("active");
@@ -293,6 +348,7 @@ function getVectorRank(response, vector) {
 function handleRankClick(vector) {
   const response = ensureResponse(getCurrentItem().id);
   dom.rankMessage.textContent = "";
+  const previousRank1 = response.rank_1_vector;
   const existingRank = getVectorRank(response, vector);
   if (existingRank) {
     response[`rank_${existingRank}_vector`] = null;
@@ -303,6 +359,11 @@ function handleRankClick(vector) {
       return;
     }
     response[`rank_${availableRank}_vector`] = vector;
+  }
+  if (previousRank1 !== response.rank_1_vector) {
+    sanitizeResponse(response, { rank1Changed: true });
+  } else {
+    sanitizeResponse(response, {});
   }
   saveState();
   render();
@@ -350,6 +411,11 @@ function renderPrimaryPanel(response) {
     select.value = response[field.id] ?? "";
     select.addEventListener("change", (event) => {
       response[field.id] = event.target.value || null;
+      if (field.id === "drift_type") {
+        sanitizeResponse(response, { driftTypeChanged: true });
+      } else {
+        sanitizeResponse(response, {});
+      }
       saveState();
       render();
     });
@@ -363,30 +429,34 @@ function updateWitnessPlaceholder(response) {
   dom.witnessText.placeholder = vector ? witnessPlaceholders[vector] || "" : "";
 }
 
-function canAdvance(response) {
-  if (!response.tripwire_status) return false;
-  if (response.forecast_detection === null) return false;
+function getMissingRequirement(response) {
+  if (!response.tripwire_status) return "Tripwire";
+  if (response.forecast_detection === null) return "Detection Forecast";
 
-  if (response.tripwire_status === "Pass") return true;
+  if (response.tripwire_status === "Pass") return "";
 
-  if (!response.rank_1_vector) return false;
+  if (!response.rank_1_vector) return "Rank 1 Vector";
 
   const otherRanked = [response.rank_1_vector, response.rank_2_vector, response.rank_3_vector].includes("Other");
   if (otherRanked) {
-    if (!response.other_parent_vector) return false;
-    if (!response.other_text || response.other_text.trim().length === 0) return false;
+    if (!response.other_parent_vector) return "Other Parent Vector";
+    if (!response.other_text || response.other_text.trim().length === 0) return "Other Text";
   }
 
-  if (!primaryPanelComplete(response)) return false;
+  if (!primaryPanelComplete(response)) return "Primary Mechanism";
 
-  if (!response.disposition) return false;
-  if (response.forecast_lethality === null) return false;
+  if (!response.disposition) return "Disposition";
+  if (response.forecast_lethality === null) return "Lethality Forecast";
 
   if (response.disposition === "Fatal") {
-    if (!response.witness_text || response.witness_text.trim().length === 0) return false;
+    if (!response.witness_text || response.witness_text.trim().length === 0) return "Witness Statement";
   }
 
-  return true;
+  return "";
+}
+
+function canAdvance(response) {
+  return getMissingRequirement(response) === "";
 }
 
 function primaryPanelComplete(response) {
@@ -409,10 +479,13 @@ function primaryPanelComplete(response) {
   return true;
 }
 
-function updateResponseField(field, value) {
+function updateResponseField(field, value, options = {}) {
   const item = getCurrentItem();
   const response = ensureResponse(item.id);
   response[field] = value;
+  if (options.sanitize) {
+    sanitizeResponse(response, options);
+  }
   saveState();
   render();
 }
@@ -425,7 +498,8 @@ function handleNavigation(direction) {
       return;
     }
     if (state.current_index === items.length - 1) {
-      handleSubmit();
+      dom.payloadSection.classList.add("hidden");
+      setView("end");
       return;
     }
     state.current_index += 1;
@@ -482,15 +556,38 @@ function handleSubmit() {
 }
 
 function attachEvents() {
+  document.querySelectorAll(".slider-anchors span").forEach((anchor) => {
+    anchor.addEventListener("click", () => {
+      const value = Number(anchor.dataset.value);
+      const section = anchor.closest(".section");
+      if (!section || Number.isNaN(value)) return;
+      const slider = section.querySelector("input[type='range']");
+      if (!slider) return;
+      slider.value = value;
+      if (slider.id === "forecastDetection") {
+        updateResponseField("forecast_detection", value);
+      } else if (slider.id === "forecastLethality") {
+        updateResponseField("forecast_lethality", value);
+      }
+    });
+  });
+
   dom.tripwireGroup.addEventListener("change", (event) => {
     if (event.target.name === "tripwire") {
-      updateResponseField("tripwire_status", event.target.value);
+      updateResponseField("tripwire_status", event.target.value, { sanitize: true, tripwireChanged: true });
     }
   });
 
   dom.forecastDetection.addEventListener("input", (event) => {
     const value = Number(event.target.value);
     updateResponseField("forecast_detection", value);
+  });
+
+  dom.forecastDetection.addEventListener("pointerdown", () => {
+    const response = ensureResponse(getCurrentItem().id);
+    if (response.forecast_detection === null) {
+      updateResponseField("forecast_detection", Number(dom.forecastDetection.value));
+    }
   });
 
   dom.otherParent.addEventListener("change", (event) => {
@@ -512,6 +609,13 @@ function attachEvents() {
     updateResponseField("forecast_lethality", value);
   });
 
+  dom.forecastLethality.addEventListener("pointerdown", () => {
+    const response = ensureResponse(getCurrentItem().id);
+    if (response.forecast_lethality === null) {
+      updateResponseField("forecast_lethality", Number(dom.forecastLethality.value));
+    }
+  });
+
   dom.witnessText.addEventListener("input", (event) => {
     updateResponseField("witness_text", event.target.value);
   });
@@ -528,8 +632,28 @@ function attachEvents() {
   dom.drawerClose.addEventListener("click", () => dom.drawer.classList.add("hidden"));
 
   dom.clearProgress.addEventListener("click", () => {
+    const confirmed = window.confirm("Are you sure? This cannot be undone.");
+    if (!confirmed) return;
     localStorage.removeItem(STORAGE_KEY);
     window.location.reload();
+  });
+
+  dom.beginAudit.addEventListener("click", () => {
+    if (!state.started_at) {
+      state.started_at = new Date().toISOString();
+      saveState();
+    }
+    setView("item");
+    render();
+  });
+
+  dom.backToLast.addEventListener("click", () => {
+    setView("item");
+    render();
+  });
+
+  dom.submitFinal.addEventListener("click", () => {
+    handleSubmit();
   });
 }
 
@@ -537,7 +661,60 @@ function init() {
   loadState();
   renderDrawerList();
   attachEvents();
+  if (state.started_at) {
+    setView("item");
+  } else {
+    setView("intro");
+  }
   render();
 }
 
 init();
+
+function sanitizeResponse(response, options = {}) {
+  if (response.tripwire_status === "Pass") {
+    const keep = new Set(["tripwire_status", "forecast_detection"]);
+    Object.keys(response).forEach((key) => {
+      if (!keep.has(key)) {
+        response[key] = null;
+      }
+    });
+    return;
+  }
+
+  if (options.rank1Changed) {
+    response.witness_text = null;
+    response.disposition = null;
+    response.forecast_lethality = null;
+    allMechanismFields.forEach((field) => {
+      response[field] = null;
+    });
+  }
+
+  const activeVector = response.rank_1_vector;
+  if (activeVector && mechanismFieldGroups[activeVector]) {
+    const activeFields = new Set(mechanismFieldGroups[activeVector]);
+    allMechanismFields.forEach((field) => {
+      if (!activeFields.has(field)) {
+        response[field] = null;
+      }
+    });
+  } else {
+    allMechanismFields.forEach((field) => {
+      response[field] = null;
+    });
+  }
+
+  const otherRanked = [response.rank_1_vector, response.rank_2_vector, response.rank_3_vector].includes("Other");
+  if (!otherRanked) {
+    response.other_parent_vector = null;
+    response.other_text = null;
+  }
+
+  if (response.drift_type !== "cross-domain") {
+    response.drift_domain = null;
+  }
+  if (response.drift_type !== "non-trait-contextual") {
+    response.drift_context_class = null;
+  }
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KARL-30 SME Red-Team Audit</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <div class="brand">
+          <span class="brand-title">KARL-30 SME Red-Team Audit</span>
+          <span id="progress" class="progress">0 / 0</span>
+        </div>
+        <button id="drawerToggle" class="ghost">Open Reference</button>
+      </header>
+
+      <main class="app-main">
+        <section class="card" id="itemCard">
+          <div class="card-header">
+            <div class="item-meta">
+              <span id="itemId" class="pill">Item</span>
+              <span id="itemDomain" class="pill">Domain</span>
+              <span id="itemFacet" class="pill">Facet</span>
+            </div>
+            <div class="scoring" id="itemScoring">Scoring: Regular</div>
+          </div>
+
+          <div id="itemText" class="item-text">Item text</div>
+
+          <div class="section">
+            <h3>Step 0 — Tripwire</h3>
+            <div class="radio-group" id="tripwireGroup">
+              <label><input type="radio" name="tripwire" value="Pass" /> Pass (No vulnerability detected)</label>
+              <label><input type="radio" name="tripwire" value="Flag" /> Flag (Vulnerability detected)</label>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Step 1 — Detection forecast (required)</h3>
+            <p class="prompt">Out of 100 typical subject-matter experts, how many would flag this item?</p>
+            <div class="slider-row">
+              <input id="forecastDetection" type="range" min="0" max="100" step="1" />
+              <span id="forecastDetectionValue" class="slider-value">—</span>
+            </div>
+          </div>
+
+          <div id="redTeamPanel" class="section red-team hidden">
+            <h3>Red-Team Panel (Flag only)</h3>
+
+            <div class="subsection">
+              <h4>Step 2 — Ranked failure vectors (max 3)</h4>
+              <div id="rankedVectors" class="vector-grid"></div>
+              <div id="rankMessage" class="rank-message" aria-live="polite"></div>
+
+              <div id="otherFields" class="other-fields hidden">
+                <label>
+                  Other parent vector (required)
+                  <select id="otherParent">
+                    <option value="">Select one</option>
+                    <option value="Proxy">Proxy</option>
+                    <option value="State">State</option>
+                    <option value="Ambiguity">Ambiguity</option>
+                    <option value="Fakability">Fakability</option>
+                    <option value="Drift">Drift</option>
+                  </select>
+                </label>
+                <label>
+                  Other text (required)
+                  <input id="otherText" type="text" maxlength="140" />
+                </label>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <h4>Step 3 — Primary mechanism (rank 1 only)</h4>
+              <div id="primaryPanel"></div>
+            </div>
+
+            <div class="subsection">
+              <h4>Step 4 — Disposition + lethality</h4>
+              <div class="radio-group" id="dispositionGroup">
+                <label><input type="radio" name="disposition" value="Acceptable" /> Acceptable Risk</label>
+                <label><input type="radio" name="disposition" value="Fatal" /> Fatal Risk</label>
+              </div>
+              <p class="prompt">Among experts who flag this item, how many would mark it Fatal risk?</p>
+              <div class="slider-row">
+                <input id="forecastLethality" type="range" min="0" max="100" step="1" />
+                <span id="forecastLethalityValue" class="slider-value">—</span>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <h4>Step 5 — Witness statement</h4>
+              <label class="witness-label">
+                <textarea id="witnessText" maxlength="300" rows="4" placeholder=""></textarea>
+                <span id="witnessCount" class="counter">0 / 300</span>
+              </label>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <button id="prevButton" class="ghost">Previous</button>
+        <button id="nextButton" class="primary">Next</button>
+      </footer>
+    </div>
+
+    <aside id="drawer" class="drawer hidden">
+      <div class="drawer-header">
+        <h2>Reference</h2>
+        <button id="drawerClose" class="ghost">Close</button>
+      </div>
+      <div class="drawer-content">
+        <section>
+          <h3>Respondent Preamble</h3>
+          <p class="muted">Placeholder preamble text for SMEs and respondents.</p>
+        </section>
+        <section>
+          <h3>KARL-30 Items</h3>
+          <ul id="drawerItemList" class="drawer-list"></ul>
+        </section>
+        <section>
+          <h3>Vector Definitions</h3>
+          <p class="muted">Placeholder definitions for Proxy, State, Ambiguity, Fakability, Drift.</p>
+        </section>
+        <section>
+          <h3>General Comments</h3>
+          <textarea id="generalComments" rows="4" placeholder="Optional notes..."></textarea>
+        </section>
+        <section>
+          <h3>Data Utilities</h3>
+          <button id="clearProgress" class="danger">Clear saved progress</button>
+        </section>
+      </div>
+    </aside>
+
+    <section class="payload hidden" id="payloadSection">
+      <h3>Submission Payload (MVP preview)</h3>
+      <pre id="payloadPre"></pre>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>

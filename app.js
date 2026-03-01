@@ -108,6 +108,8 @@ let state = null;
 const dom = {
   progress: document.getElementById("progress"),
   introScreen: document.getElementById("introScreen"),
+  introScreen2: document.getElementById("introScreen2"),
+  introNext: document.getElementById("introNext"),
   beginAudit: document.getElementById("beginAudit"),
   itemId: document.getElementById("itemId"),
   itemDomain: document.getElementById("itemDomain"),
@@ -263,7 +265,9 @@ function renderDrawerList() {
       .filter((item) => item.domain === group.domain)
       .forEach((item) => {
         const scoring = item.scoring_direction === "-" ? "(-)" : "(+)";
-        rows.push(`<li>[${item.id}] ${scoring} ${item.facet}: ${item.text}</li>`);
+        rows.push(
+          `<li class="drawer-item"><span class="drawer-meta">[${item.id.replace('I', '#')}] ${scoring}</span><span class="drawer-text">${item.facet}: ${item.text}</span></li>`
+        );
       });
   });
   dom.drawerItemList.innerHTML = rows.join("");
@@ -271,6 +275,7 @@ function renderDrawerList() {
 
 function setView(view) {
   dom.introScreen.classList.toggle("hidden", view !== "intro");
+  dom.introScreen2.classList.toggle("hidden", view !== "intro2");
   dom.itemCard.classList.toggle("hidden", view !== "item");
   dom.endScreen.classList.toggle("hidden", view !== "end");
   dom.appFooter.classList.toggle("hidden", view !== "item");
@@ -638,11 +643,16 @@ function attachEvents() {
     window.location.reload();
   });
 
+  dom.introNext.addEventListener("click", () => {
+    setView("intro2");
+  });
+
   dom.beginAudit.addEventListener("click", () => {
     if (!state.started_at) {
       state.started_at = new Date().toISOString();
       saveState();
     }
+    dom.appFooter.classList.remove("hidden");
     setView("item");
     render();
   });

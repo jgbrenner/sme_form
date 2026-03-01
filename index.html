@@ -23,7 +23,7 @@
             <div class="preamble-text" style="margin-bottom: 2rem; line-height: 1.6;">
               <p>You are participating in a red-teaming exercise to stress-test the KARL-30, an ultra-short distillation of the Johnson IPIP-NEO-300 (Johnson, 2014) Big Five inventory.</p>
               <p><strong>Context & Mission:</strong> The scale uses exactly one item per facet. A structural failure in a single item completely severs our ability to measure that trait. Intended use is for adult WEIRD samples typical of online administration.</p>
-              <p><strong>Your Mandate:</strong> Attempt to break the measurement. We are hunting for items that fail to isolate the target trait. Items are evaluated as-is.</p>
+              <p><strong>Your Mandate:</strong> Attempt to break the measurement. We are hunting for items that fail to isolate the target facet. Items are evaluated as-is.</p>
               <div style="background: var(--bg-surface, #1e1e24); padding: 1rem; border-radius: 6px; margin-top: 1rem; border: 1px solid var(--border-color, #333);">
                 <strong style="display: block; margin-bottom: 0.5rem; color: var(--accent-color, #4ade80);">The Failure Vectors:</strong>
                 <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.95rem; color: var(--text-muted, #a1a1aa);">
@@ -35,6 +35,34 @@
                 </ul>
               </div>
             </div>
+            <button id="introNext" class="primary">Next: Respondent Instructions</button>
+          </div>
+        </section>
+
+      <section class="card hidden" id="introScreen2">
+          <div class="intro">
+            <h2>Original Respondent Instructions (Johnson, 2014)</h2>
+            <p class="muted" style="margin-bottom: 1rem;">These are the test-taker instructions that define the response context.</p>
+            
+            <blockquote style="font-size: 0.95rem; line-height: 1.6; color: var(--text-color); border-left: 3px solid var(--border-color); padding-left: 1rem; margin: 0 0 1.5rem 0; background: var(--bg-surface); padding: 1rem; border-radius: 4px;">
+              "The following pages contain phrases describing people's behaviors. Please use the rating scale next to each phrase to describe how accurately each statement describes you. <br><br>
+              <strong>Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, in relation to other people you know of the same sex as you are, and roughly your same age.</strong><br><br>
+              So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence."
+            </blockquote>
+
+            <p><strong>Respondent Rating Scale:</strong> Test-takers evaluate each item using the following 5-point scale:</p>
+            <div class="likert-scale-display">
+              <span>Inaccurate</span>
+              <span>Moderately Inaccurate</span>
+              <span>Neither</span>
+              <span>Moderately Accurate</span>
+              <span>Accurate</span>
+            </div>
+
+            <div class="orientation-note" style="margin: 2rem 0; padding: 1rem; background: rgba(74, 222, 128, 0.1); border: 1px solid var(--accent-color); border-radius: 6px; font-size: 0.9rem;">
+              You can reference these original instructions, the full KARL-30 inventory, and the vector definitions at any time by clicking the "Open Reference" button in the top right corner. This red-teaming exercise will take between 5 and 15 minutes, depending on how deeply you choose to investigate each item.
+            </div>
+
             <button id="beginAudit" class="primary">Begin Audit</button>
           </div>
         </section>
@@ -155,7 +183,7 @@
         </section>
       </main>
 
-      <footer class="app-footer" id="appFooter">
+      <footer class="app-footer hidden" id="appFooter">
         <button id="prevButton" class="ghost">Previous</button>
         <div id="validationStatus" class="status"></div>
         <button id="nextButton" class="primary">Next</button>
@@ -171,22 +199,36 @@
         <section>
           <h3>Original Respondent Preamble</h3>
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-            This is the exact instruction given to test-takers in the Johnson (2014) administration. Use this context to resolve ambiguity flags.
+            This is the exact instruction given to test-takers in the Johnson (2014) administration.
           </p>
-          <blockquote style="font-size: 0.9rem; line-height: 1.5; color: var(--text-color); border-left: 3px solid var(--border-color); padding-left: 1rem; margin: 0; background: var(--bg-surface); padding: 1rem; border-radius: 4px;">
-            "The following pages contain phrases describing people's behaviors. Please use the rating scale next to each phrase to describe how accurately each statement describes you. <br><br>
+          <blockquote style="font-size: 0.85rem; line-height: 1.5; color: var(--text-color); border-left: 3px solid var(--border-color); padding-left: 0.75rem; margin: 0 0 1rem 0;">
+            "The following pages contain phrases describing people's behaviors. Please use the rating scale next to each phrase to describe how accurately each statement describes you.<br><br>
             <strong>Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, in relation to other people you know of the same sex as you are, and roughly your same age.</strong><br><br>
-            So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence. <em>[Mechanical instructions regarding clicking circles and marking 'X's omitted for brevity]</em>. <br><br>
-            Please note that this questionnaire tends to take about 35 minutes to complete."
+            So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence. <em>[Mechanical instructions regarding answer circles and marking 'X's omitted for brevity]</em>."
           </blockquote>
+          
+          <p style="font-size: 0.85rem; margin-bottom: 0.5rem;"><strong>Rating Scale:</strong></p>
+          <div class="likert-scale-display" style="gap: 0.5rem; justify-content: flex-start;">
+            <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Inaccurate</span>
+            <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Mod. Inaccurate</span>
+            <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Neither</span>
+            <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Mod. Accurate</span>
+            <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Accurate</span>
+          </div>
         </section>
         <section>
           <h3>KARL-30 Items</h3>
           <ul id="drawerItemList" class="drawer-list"></ul>
         </section>
         <section>
-          <h3>Vector Definitions</h3>
-          <p class="muted">Placeholder definitions for Proxy, State, Ambiguity, Fakability, Drift.</p>
+          <h3>Failure Vector Definitions</h3>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.85rem; color: var(--text-color); line-height: 1.5;">
+            <li style="margin-bottom: 0.5rem;"><strong>Proxy:</strong> Measures a demographic/cultural proxy (e.g., wealth, education) instead of the trait.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>State:</strong> Response is driven by temporary mood or fatigue, not a stable trait.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Ambiguity:</strong> Text is vague, leading to multiple valid interpretations.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Fakability:</strong> Easily gamed for social desirability.</li>
+            <li><strong>Drift:</strong> Discriminant collapse; item measures a completely different trait.</li>
+          </ul>
         </section>
         <section>
           <h3>Data Utilities</h3>

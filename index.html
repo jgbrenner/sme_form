@@ -167,7 +167,7 @@
 
         <section id="endScreen" class="card hidden">
           <h2>Review & Submit</h2>
-          <p class="muted">Review your final notes, then submit the payload for export.</p>
+          <p class="muted">Review your final notes, then submit your final audit.</p>
           <label>
             General Comments
             <textarea id="generalComments" rows="5" placeholder="Optional notes..."></textarea>
@@ -176,9 +176,14 @@
             <button id="backToLast" class="ghost">Back to last item</button>
             <button id="submitFinal" class="primary">Submit</button>
           </div>
-          <div id="payloadSection" class="payload hidden">
-            <h3>Submission Payload (MVP preview)</h3>
-            <pre id="payloadPre"></pre>
+        </section>
+
+        <section id="thankYouScreen" class="card hidden">
+          <div class="intro" style="text-align: center;">
+            <h2>Audit Complete</h2>
+            <p class="muted" style="margin-bottom: 2rem;">Thank you for your time and expertise.</p>
+            <div id="auditSummary" style="background: var(--bg-surface); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border-color); display: inline-block; text-align: left; margin-bottom: 2rem;"></div>
+            <p style="font-size: 0.9rem;">You may now safely close this window.</p>
           </div>
         </section>
       </main>

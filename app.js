@@ -136,17 +136,17 @@ const dom = {
   nextButton: document.getElementById("nextButton"),
   validationStatus: document.getElementById("validationStatus"),
   endScreen: document.getElementById("endScreen"),
+  thankYouScreen: document.getElementById("thankYouScreen"),
   backToLast: document.getElementById("backToLast"),
   submitFinal: document.getElementById("submitFinal"),
+  auditSummary: document.getElementById("auditSummary"),
   appFooter: document.getElementById("appFooter"),
   drawer: document.getElementById("drawer"),
   drawerToggle: document.getElementById("drawerToggle"),
   drawerClose: document.getElementById("drawerClose"),
   drawerItemList: document.getElementById("drawerItemList"),
   generalComments: document.getElementById("generalComments"),
-  clearProgress: document.getElementById("clearProgress"),
-  payloadSection: document.getElementById("payloadSection"),
-  payloadPre: document.getElementById("payloadPre")
+  clearProgress: document.getElementById("clearProgress")
 };
 
 function uuidv4() {
@@ -278,6 +278,7 @@ function setView(view) {
   dom.introScreen2.classList.toggle("hidden", view !== "intro2");
   dom.itemCard.classList.toggle("hidden", view !== "item");
   dom.endScreen.classList.toggle("hidden", view !== "end");
+  dom.thankYouScreen.classList.toggle("hidden", view !== "thankYou");
   dom.appFooter.classList.toggle("hidden", view !== "item");
 }
 
@@ -503,7 +504,6 @@ function handleNavigation(direction) {
       return;
     }
     if (state.current_index === items.length - 1) {
-      dom.payloadSection.classList.add("hidden");
       setView("end");
       return;
     }
@@ -517,7 +517,19 @@ function handleNavigation(direction) {
   render();
 }
 
-function handleSubmit() {
+function mockSendPayload(payload) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ status: 200, ok: true, rows: payload.length });
+    }, 1000);
+  });
+}
+
+async function handleSubmit() {
+  const submitLabel = dom.submitFinal.textContent;
+  dom.submitFinal.textContent = "Submitting...";
+  dom.submitFinal.disabled = true;
+
   const submittedAt = new Date().toISOString();
   const payload = items.map((item) => {
     const response = ensureResponse(item.id);
@@ -556,8 +568,18 @@ function handleSubmit() {
   });
 
   console.log(payload);
-  dom.payloadPre.textContent = JSON.stringify(payload, null, 2);
-  dom.payloadSection.classList.remove("hidden");
+
+  try {
+    await mockSendPayload(payload);
+    const flagCount = payload.filter((p) => p.tripwire_status === "Flag").length;
+    dom.auditSummary.innerHTML = `<strong>Audit Summary:</strong><br>• Items Reviewed: ${payload.length}<br>• Vulnerabilities Flagged: ${flagCount}`;
+    setView("thankYou");
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    dom.submitFinal.disabled = false;
+    dom.submitFinal.textContent = submitLabel;
+    window.alert("Network error. Please try submitting again.");
+  }
 }
 
 function attachEvents() {

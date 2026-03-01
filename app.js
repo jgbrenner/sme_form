@@ -267,7 +267,7 @@ function renderDrawerList() {
       .forEach((item) => {
         const scoring = item.scoring_direction === "-" ? "(-)" : "(+)";
         rows.push(
-          `<li class="drawer-item"><span class="drawer-meta">[${item.id.replace('I', '#')}] ${scoring}</span><span class="drawer-facet">${item.facet}</span><span class="drawer-text">${item.text}</span></li>`
+          `<li class="drawer-item"><span class="drawer-scoring">${scoring}</span><span class="drawer-facet">${item.facet}:</span><span class="drawer-text">${item.text}</span><span class="drawer-meta">[${item.id.replace('I', '#')}]</span></li>`
         );
       });
   });

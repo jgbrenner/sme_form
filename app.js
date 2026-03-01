@@ -1,4 +1,5 @@
 const STORAGE_KEY = "karl30_sme_state_v1";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXwwsiqwtMIHv0geaQxo6nwuld-ywg7fNvg2Xp32ORxsWna5HXcvdbbkVw1wUyJQM_xA/exec";
 
 const items = [
   { id: "I104", domain: "Agreeableness", facet: "Altruism", text: "Am concerned about others.", scoring_direction: "+" },
@@ -517,18 +518,9 @@ function handleNavigation(direction) {
   render();
 }
 
-function mockSendPayload(payload) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ status: 200, ok: true, rows: payload.length });
-    }, 1000);
-  });
-}
-
-async function handleSubmit() {
-  const submitLabel = dom.submitFinal.textContent;
-  dom.submitFinal.textContent = "Submitting...";
+function handleSubmit() {
   dom.submitFinal.disabled = true;
+  dom.submitFinal.textContent = "Submitting...";
 
   const submittedAt = new Date().toISOString();
   const payload = items.map((item) => {
@@ -563,23 +555,35 @@ async function handleSubmit() {
       drift_context_class: response.drift_context_class,
       disposition: response.disposition,
       forecast_lethality: response.forecast_lethality,
-      witness_text: response.witness_text
+      witness_text: response.witness_text,
+      general_comments: state.general_comments
     };
   });
 
   console.log(payload);
 
-  try {
-    await mockSendPayload(payload);
-    const flagCount = payload.filter((p) => p.tripwire_status === "Flag").length;
-    dom.auditSummary.innerHTML = `<strong>Audit Summary:</strong><br>• Items Reviewed: ${payload.length}<br>• Vulnerabilities Flagged: ${flagCount}`;
-    setView("thankYou");
-    localStorage.removeItem(STORAGE_KEY);
-  } catch (error) {
-    dom.submitFinal.disabled = false;
-    dom.submitFinal.textContent = submitLabel;
-    window.alert("Network error. Please try submitting again.");
-  }
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const flagCount = payload.filter((p) => p.tripwire_status === "Flag").length;
+      dom.auditSummary.innerHTML = `<strong>Audit Summary:</strong><br>• Items Reviewed: ${payload.length}<br>• Vulnerabilities Flagged: ${flagCount}`;
+      setView("thankYou");
+      localStorage.removeItem(STORAGE_KEY);
+    })
+    .catch((error) => {
+      console.error("Submission failed:", error);
+      dom.submitFinal.disabled = false;
+      dom.submitFinal.textContent = "Submit";
+      window.alert("Network error. Please check your connection and try submitting again.");
+    });
 }
 
 function attachEvents() {

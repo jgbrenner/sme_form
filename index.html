@@ -19,32 +19,49 @@
       <main class="app-main">
         <section class="card" id="introScreen">
           <div class="intro">
-            <h2>SME Red-Team Preamble</h2>
+            <h2>Subject Matter Expert Red-Team Evaluation of the KARL-30</h2>
             <div class="preamble-text" style="margin-bottom: 2rem; line-height: 1.6;">
-              <p>You are participating in a red-teaming exercise to stress-test the KARL-30, an ultra-short distillation of the Johnson IPIP-NEO-300 (Johnson, 2014) Big Five inventory.</p>
-              <p><strong>Context & Mission:</strong> The scale uses exactly one item per facet. A structural failure in a single item completely severs our ability to measure that trait. Intended use is for adult WEIRD samples typical of online administration.</p>
-              <p><strong>Your Mandate:</strong> Attempt to break the measurement. We are hunting for items that fail to isolate the target facet. Items are evaluated as-is.</p>
-              <div style="background: var(--bg-surface, #1e1e24); padding: 1rem; border-radius: 6px; margin-top: 1rem; border: 1px solid var(--border-color, #333);">
-                <strong style="display: block; margin-bottom: 0.5rem; color: var(--accent-color, #4ade80);">The Failure Vectors:</strong>
-                <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.95rem; color: var(--text-muted, #a1a1aa);">
-                  <li><strong>Proxy:</strong> Measures a demographic/cultural proxy (e.g., wealth, education) instead of the trait.</li>
-                  <li><strong>State:</strong> Response is driven by temporary mood or fatigue, not a stable trait.</li>
-                  <li><strong>Ambiguity:</strong> Text is vague, leading to multiple valid interpretations.</li>
-                  <li><strong>Fakability:</strong> Easily gamed for social desirability.</li>
-                  <li><strong>Drift:</strong> Discriminant collapse; item measures a completely different trait.</li>
-                </ul>
+              <p>You are participating in an adversarial validation exercise to stress-test the <strong>KARL-30</strong>, an ultra-short distillation of the <a href="https://ipip.ori.org/A%20broad-bandwidth%20inventory.pdf" target="_blank" style="color: var(--accent); text-decoration: none;">300-item IPIP-NEO (Goldberg, 1999)</a> Big Five inventory.</p>
+              <p><strong>Context & Mission:</strong> This scale operates at the absolute limit of the bandwidth–fidelity tradeoff: <strong>exactly one item per facet</strong>. Each item is a single load-bearing pillar—a structural failure does not merely degrade reliability; it <strong>severs our ability to measure that facet</strong>.</p>
+              <p><strong>Target Deployment:</strong> Adult <strong>WEIRD</strong> samples <em>(Western, Educated, Industrialized, Rich, and Democratic)</em> typical of online administration.</p>
+              
+              <p><strong>Rules of Engagement:</strong> Evaluate each item <strong>exactly as written</strong>. Do not attempt to rewrite or fix the phrasing. The audit follows a two-stage threshold:</p>
+              <p><strong>1. Vulnerability Check</strong><br>
+              — <strong>Pass:</strong> The item isolates the target facet cleanly enough to serve as its sole indicator.<br>
+              — <strong>Flag:</strong> The item exhibits a specific structural vulnerability from our vector taxonomy.</p>
+              <p><strong>2. Disposition (If Flagged)</strong><br>
+              — <strong>Acceptable Risk:</strong> A vulnerability exists, but the item is still usable as the sole marker.<br>
+              — <strong>Fatal Risk:</strong> The vulnerability is catastrophic; the item cannot survive as the sole marker and must be replaced.</p>
+
+              <div style="background: var(--panel-2); padding: 1rem; border-radius: 6px; margin-top: 1rem; border: 1px solid var(--border);">
+                <strong style="display: block; margin-bottom: 0.5rem; color: var(--text);">Failure Vectors:</strong>
+                <p style="font-size: 0.85rem; color: var(--muted); margin-top: 0; margin-bottom: 0.75rem;"><em>(You will select these via on-screen buttons; you do not need to memorize them.)</em></p>
+                <div style="margin: 0; font-size: 0.95rem; color: var(--muted); line-height: 1.5;">
+                  — <strong>Proxy:</strong> Measures a demographic/cultural proxy (e.g., wealth, education, ideology) instead of the trait.<br>
+                  — <strong>State:</strong> Driven by temporary mood, fatigue, or immediate environment rather than a stable trait.<br>
+                  — <strong>Ambiguity:</strong> Lexically or contextually vague, enabling multiple valid interpretations.<br>
+                  — <strong>Fakability:</strong> Highly transparent and easily gamed for social desirability.<br>
+                  — <strong>Drift:</strong> Discriminant collapse; the item inadvertently measures a completely different trait.<br>
+                  — <strong>Other:</strong> Use only if none of the above fit, and specify the mechanism.
+                </div>
               </div>
+
+              <p style="margin-top: 1.5rem;"><strong>System Constraints & Consent:</strong><br>
+              — <strong>Autosave:</strong> Your progress is saved locally on every interaction. You may close this window and return later.<br>
+              — <strong>Pacing:</strong> This exercise is not timed. It should take ~5–15 minutes, but take as long as necessary.<br>
+              — <strong>Privacy:</strong> Do not include personally Identifiable Information  in the comments.<br>
+              — <strong>Consent:</strong> Participation is fully voluntary. You may abandon this exercise at any point.</p>
             </div>
-            <button id="introNext" class="primary">Next: Respondent Instructions</button>
+            <button id="introNext" class="primary">Next: Respondent Context</button>
           </div>
         </section>
 
-      <section class="card hidden" id="introScreen2">
+        <section class="card hidden" id="introScreen2">
           <div class="intro">
-            <h2>Original Respondent Instructions (Johnson, 2014)</h2>
-            <p class="muted" style="margin-bottom: 1rem;">These are the test-taker instructions that define the response context.</p>
+            <h2>Respondent Cognitive Environment (<a href="https://doi.org/10.1016/j.jrp.2014.05.003" target="_blank" style="color: var(--accent); text-decoration: none;">Johnson, 2014</a>)</h2>
+            <p class="muted" style="margin-bottom: 1rem;">To evaluate an item's vulnerability, you must evaluate it under the exact constraints placed on the test-taker. Below are the original instructions presented to respondents.</p>
             
-            <blockquote style="font-size: 0.95rem; line-height: 1.6; color: var(--text-color); border-left: 3px solid var(--border-color); padding-left: 1rem; margin: 0 0 1.5rem 0; background: var(--bg-surface); padding: 1rem; border-radius: 4px;">
+            <blockquote style="font-size: 0.95rem; line-height: 1.6; color: var(--text); border-left: 3px solid var(--border); padding-left: 1rem; margin: 0 0 1.5rem 0; background: var(--panel-2); padding: 1rem; border-radius: 4px;">
               "The following pages contain phrases describing people's behaviors. Please use the rating scale next to each phrase to describe how accurately each statement describes you. <br><br>
               <strong>Describe yourself as you generally are now, not as you wish to be in the future. Describe yourself as you honestly see yourself, in relation to other people you know of the same sex as you are, and roughly your same age.</strong><br><br>
               So that you can describe yourself in an honest manner, your responses will be kept in absolute confidence."
@@ -59,8 +76,8 @@
               <span>Accurate</span>
             </div>
 
-            <div class="orientation-note" style="margin: 2rem 0; padding: 1rem; background: rgba(74, 222, 128, 0.1); border: 1px solid var(--accent-color); border-radius: 6px; font-size: 0.9rem;">
-              You can reference these original instructions, the full KARL-30 inventory, and the vector definitions at any time by clicking the "Open Reference" button in the top right corner. This red-teaming exercise will take between 5 and 15 minutes, depending on how deeply you choose to investigate each item.
+            <div class="orientation-note" style="margin: 2rem 0; padding: 1rem; background: rgba(35, 134, 54, 0.1); border: 1px solid var(--accent); border-radius: 6px; font-size: 0.9rem;">
+              You can reference these original instructions, the full KARL-30 inventory, and the vector definitions at any time by opening the Reference Drawer in the top right corner.
             </div>
 
             <button id="beginAudit" class="primary">Begin Audit</button>
@@ -234,6 +251,15 @@
             <li style="margin-bottom: 0.5rem;"><strong>Ambiguity:</strong> Text is vague, leading to multiple valid interpretations.</li>
             <li style="margin-bottom: 0.5rem;"><strong>Fakability:</strong> Easily gamed for social desirability.</li>
             <li><strong>Drift:</strong> Discriminant collapse; item measures a completely different trait.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Source Documentation</h3>
+          <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.85rem; color: var(--text); line-height: 1.5;">
+            <li style="margin-bottom: 0.5rem;"><a href="https://ipip.ori.org/A%20broad-bandwidth%20inventory.pdf" target="_blank" style="color: var(--accent); text-decoration: none;">Goldberg (1999) — Broad-bandwidth inventory (PDF)</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="https://doi.org/10.1016/j.jrp.2014.05.003" target="_blank" style="color: var(--accent); text-decoration: none;">Johnson (2014) — IPIP-NEO-120 development (DOI)</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="https://www.ipip.ori.org/newCitation.htm" target="_blank" style="color: var(--accent); text-decoration: none;">IPIP — Official Citation Guidance</a></li>
+            <li><a href="https://osf.io/wxvth/wiki/home/" target="_blank" style="color: var(--accent); text-decoration: none;">Johnson OSF — Data Documentation Wiki</a></li>
           </ul>
         </section>
         <section>

@@ -26,31 +26,37 @@
               <p><strong>Target Deployment:</strong> Adult <strong>WEIRD</strong> samples <em>(Western, Educated, Industrialized, Rich, and Democratic)</em> typical of online administration.</p>
               
               <p><strong>Rules of Engagement:</strong> Evaluate each item <strong>exactly as written</strong>. Do not attempt to rewrite or fix the phrasing. The audit follows a two-stage threshold:</p>
-              <p><strong>1. Vulnerability Check</strong><br>
-              — <strong>Pass:</strong> The item isolates the target facet cleanly enough to serve as its sole indicator.<br>
-              — <strong>Flag:</strong> The item exhibits a specific structural vulnerability from our vector taxonomy.</p>
-              <p><strong>2. Disposition (If Flagged)</strong><br>
-              — <strong>Acceptable Risk:</strong> A vulnerability exists, but the item is still usable as the sole marker.<br>
-              — <strong>Fatal Risk:</strong> The vulnerability is catastrophic; the item cannot survive as the sole marker and must be replaced.</p>
+              <p><strong>1. Vulnerability Check</strong></p>
+              <ul style="padding-left: 1.25rem; margin-top: 0.25rem; margin-bottom: 1rem; color: var(--muted); line-height: 1.5;">
+                <li style="margin-bottom: 0.25rem;"><strong style="color: var(--text);">Pass:</strong> The item isolates the target facet cleanly enough to serve as its sole indicator.</li>
+                <li><strong style="color: var(--text);">Flag:</strong> The item exhibits a specific structural vulnerability from our vector taxonomy.</li>
+              </ul>
+              <p><strong>2. Disposition (If Flagged)</strong></p>
+              <ul style="padding-left: 1.25rem; margin-top: 0.25rem; color: var(--muted); line-height: 1.5;">
+                <li style="margin-bottom: 0.25rem;"><strong style="color: var(--text);">Acceptable Risk:</strong> A vulnerability exists, but the item is still usable as the sole marker.</li>
+                <li><strong style="color: var(--text);">Fatal Risk:</strong> The vulnerability is catastrophic; the item cannot survive as the sole marker and must be replaced.</li>
+              </ul>
 
               <div style="background: var(--panel-2); padding: 1rem; border-radius: 6px; margin-top: 1rem; border: 1px solid var(--border);">
                 <strong style="display: block; margin-bottom: 0.5rem; color: var(--text);">Failure Vectors:</strong>
                 <p style="font-size: 0.85rem; color: var(--muted); margin-top: 0; margin-bottom: 0.75rem;"><em>(You will select these via on-screen buttons; you do not need to memorize them.)</em></p>
-                <div style="margin: 0; font-size: 0.95rem; color: var(--muted); line-height: 1.5;">
-                  — <strong>Proxy:</strong> Measures a demographic/cultural proxy (e.g., wealth, education, ideology) instead of the trait.<br>
-                  — <strong>State:</strong> Driven by temporary mood, fatigue, or immediate environment rather than a stable trait.<br>
-                  — <strong>Ambiguity:</strong> Lexically or contextually vague, enabling multiple valid interpretations.<br>
-                  — <strong>Fakability:</strong> Highly transparent and easily gamed for social desirability.<br>
-                  — <strong>Drift:</strong> Discriminant collapse; the item inadvertently measures a completely different trait.<br>
-                  — <strong>Other:</strong> Use only if none of the above fit, and specify the mechanism.
-                </div>
+                <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.95rem; color: var(--muted); line-height: 1.5;">
+                  <li style="margin-bottom: 0.4rem;"><strong style="color: var(--text);">Proxy:</strong> Measures a demographic/cultural proxy (e.g., wealth, education, ideology) instead of the trait.</li>
+                  <li style="margin-bottom: 0.4rem;"><strong style="color: var(--text);">State:</strong> Driven by temporary mood, fatigue, or immediate environment rather than a stable trait.</li>
+                  <li style="margin-bottom: 0.4rem;"><strong style="color: var(--text);">Ambiguity:</strong> Lexically or contextually vague, enabling multiple valid interpretations.</li>
+                  <li style="margin-bottom: 0.4rem;"><strong style="color: var(--text);">Fakability:</strong> Highly transparent and easily gamed for social desirability.</li>
+                  <li style="margin-bottom: 0.4rem;"><strong style="color: var(--text);">Drift:</strong> Discriminant collapse; the item inadvertently measures a completely different trait.</li>
+                  <li><strong style="color: var(--text);">Other:</strong> Use only if none of the above fit, and specify the mechanism.</li>
+                </ul>
               </div>
 
-              <p style="margin-top: 1.5rem;"><strong>System Constraints & Consent:</strong><br>
-              — <strong>Autosave:</strong> Your progress is saved locally on every interaction. You may close this window and return later.<br>
-              — <strong>Pacing:</strong> This exercise is not timed. It should take ~5–15 minutes, but take as long as necessary.<br>
-              — <strong>Privacy:</strong> Do not include personally Identifiable Information  in the comments.<br>
-              — <strong>Consent:</strong> Participation is fully voluntary. You may abandon this exercise at any point.</p>
+              <p style="margin-top: 1.5rem; margin-bottom: 0.5rem;"><strong>System Constraints & Consent:</strong></p>
+              <ul style="padding-left: 1.25rem; margin-top: 0; color: var(--muted); line-height: 1.5;">
+                <li style="margin-bottom: 0.25rem;"><strong style="color: var(--text);">Autosave:</strong> Your progress is saved locally on every interaction. You may close this window and return later.</li>
+                <li style="margin-bottom: 0.25rem;"><strong style="color: var(--text);">Pacing:</strong> This exercise is not timed. It should take ~5–15 minutes, but take as long as necessary.</li>
+                <li style="margin-bottom: 0.25rem;"><strong style="color: var(--text);">Privacy:</strong> Please do not include Personally Identifiable Information in the comments.</li>
+                <li><strong style="color: var(--text);">Consent:</strong> Participation is fully voluntary. You may abandon this exercise at any point.</li>
+              </ul>
             </div>
             <button id="introNext" class="primary">Next: Respondent Context</button>
           </div>

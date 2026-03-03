@@ -38,3 +38,5 @@ env/
 # Project specific
 .env
 .secrets
+agent.md
+karl.md
